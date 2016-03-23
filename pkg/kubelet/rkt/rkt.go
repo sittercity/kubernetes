@@ -87,7 +87,7 @@ const (
 
 	defaultImageTag          = "latest"
 	defaultRktAPIServiceAddr = "localhost:15441"
-	defaultNetworkName       = "rkt.kubernetes.io"
+	defaultNetworkName       = "default,rkt.kubernetes.io"
 
 	// ndots specifies the minimum number of dots that a domain name must contain for the resolver to consider it as FQDN (fully-qualified)
 	// we want to able to consider SRV lookup names like _dns._udp.kube-dns.default.svc to be considered relative.

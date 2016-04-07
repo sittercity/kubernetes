@@ -87,7 +87,8 @@ const (
 
 	defaultImageTag          = "latest"
 	defaultRktAPIServiceAddr = "localhost:15441"
-	defaultNetworkName       = "rkt.kubernetes.io"
+	rktNetworks              = "default,rkt.kubernetes.io"
+	primaryNetworkName       = "rkt.kubernetes.io"
 
 	// ndots specifies the minimum number of dots that a domain name must contain for the resolver to consider it as FQDN (fully-qualified)
 	// we want to able to consider SRV lookup names like _dns._udp.kube-dns.default.svc to be considered relative.
@@ -708,7 +709,7 @@ func (r *Runtime) generateRunCommand(pod *api.Pod, uuid string) (string, error) 
 	if pod.Spec.SecurityContext != nil && pod.Spec.SecurityContext.HostNetwork {
 		runPrepared = append(runPrepared, "--net=host")
 	} else {
-		runPrepared = append(runPrepared, fmt.Sprintf("--net=%s", defaultNetworkName))
+		runPrepared = append(runPrepared, fmt.Sprintf("--net=%s", rktNetworks))
 	}
 
 	// Setup DNS.
@@ -1474,7 +1475,7 @@ func (r *Runtime) GetPodStatus(uid types.UID, name, namespace string) (*kubecont
 	if latestPod != nil {
 		// Try to fill the IP info.
 		for _, n := range latestPod.Networks {
-			if n.Name == defaultNetworkName {
+			if n.Name == primaryNetworkName {
 				podStatus.IP = n.Ipv4
 			}
 		}

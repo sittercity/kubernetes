@@ -76,3 +76,56 @@ func TestGenerateStorageVersionMap(t *testing.T) {
 		}
 	}
 }
+
+func TestAddFlagsFlag(t *testing.T) {
+	// TODO: This only tests the enable-swagger-ui flag for now.
+	// Expand the test to include other flags as well.
+	f := pflag.NewFlagSet("addflagstest", pflag.ContinueOnError)
+	s := NewAPIServer()
+	s.AddFlags(f)
+	if s.EnableSwaggerUI {
+		t.Errorf("Expected s.EnableSwaggerUI to be false by default")
+	}
+
+	args := []string{
+		"--enable-swagger-ui=true",
+	}
+	f.Parse(args)
+	if !s.EnableSwaggerUI {
+		t.Errorf("Expected s.EnableSwaggerUI to be true")
+	}
+}
+
+func TestEtcdUsernameFlag(t *testing.T) {
+	f := pflag.NewFlagSet("addflagstest", pflag.ContinueOnError)
+	s := NewAPIServer()
+	s.AddFlags(f)
+	if s.EtcdConfig.Username != "" {
+		t.Errorf("Expected s.EtcdConfig.Username to be empty by default")
+	}
+
+	args := []string{
+		"--etcd-username=testuser",
+	}
+	f.Parse(args)
+	if s.EtcdConfig.Username != "testuser" {
+		t.Errorf("Expected s.EtcdConfig.Username to be testuser")
+	}
+}
+
+func TestEtcdPasswordFlag(t *testing.T) {
+	f := pflag.NewFlagSet("addflagstest", pflag.ContinueOnError)
+	s := NewAPIServer()
+	s.AddFlags(f)
+	if s.EtcdConfig.Password != "" {
+		t.Errorf("Expected s.EtcdConfig.Password to be empty by default")
+	}
+
+	args := []string{
+		"--etcd-password=testpass",
+	}
+	f.Parse(args)
+	if s.EtcdConfig.Password != "testpass" {
+		t.Errorf("Expected s.EtcdConfig.Password to be testpass")
+	}
+}

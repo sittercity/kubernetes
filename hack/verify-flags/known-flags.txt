@@ -99,6 +99,7 @@ enable-hostpath-provisioner
 enable-server
 etcd-config
 etcd-mutation-timeout
+etcd-password
 etcd-prefix
 etcd-quorum-read
 etcd-server
@@ -107,6 +108,7 @@ etcd-servers-overrides
 etcd-keyfile
 etcd-certfile
 etcd-cafile
+etcd-username
 event-burst
 event-qps
 event-ttl

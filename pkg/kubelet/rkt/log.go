@@ -110,7 +110,7 @@ func (r *Runtime) GetContainerLogs(pod *api.Pod, containerID kubecontainer.Conta
 		return err
 	}
 
-	cmd := exec.Command("journalctl", "-m", fmt.Sprintf("_HOSTNAME=rkt-%s", id.uuid), "-u", id.appName, "-a")
+	cmd := exec.Command("journalctl", "-m", "-M", fmt.Sprintf("rkt-%s", id.uuid), "-u", id.appName, "-a")
 
 	// Get the json structured logs.
 	cmd.Args = append(cmd.Args, "-o", "json")

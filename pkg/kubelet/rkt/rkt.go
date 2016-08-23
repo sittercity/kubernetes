@@ -126,7 +126,8 @@ const (
 	// CNI directory specified by kubelet. Once that is fixed, we can just use the network config
 	// under the CNI directory directly.
 	// See https://github.com/coreos/rkt/pull/2312#issuecomment-200068370.
-	defaultNetworkName = "rkt.kubernetes.io"
+	rktNetworks        = "default,rkt.kubernetes.io"
+	primaryNetworkName = "rkt.kubernetes.io"
 
 	// defaultRequestTimeout is the default timeout of rkt requests.
 	defaultRequestTimeout = 2 * time.Minute
@@ -989,7 +990,7 @@ func (r *Runtime) generateRunCommand(pod *api.Pod, uuid, netnsName string) (stri
 	if r.usesRktHostNetwork(pod) {
 		runPrepared = append(runPrepared, "--net=host")
 	} else {
-		runPrepared = append(runPrepared, fmt.Sprintf("--net=%s", defaultNetworkName))
+		runPrepared = append(runPrepared, fmt.Sprintf("--net=%s", rktNetworks))
 	}
 
 	if kubecontainer.IsHostNetworkPod(pod) {
@@ -2292,7 +2293,7 @@ func (r *Runtime) GetPodStatus(uid kubetypes.UID, name, namespace string) (*kube
 	if r.networkPlugin.Name() == network.DefaultPluginName {
 		if latestPod != nil {
 			for _, n := range latestPod.Networks {
-				if n.Name == defaultNetworkName {
+				if n.Name == primaryNetworkName {
 					podStatus.IP = n.Ipv4
 					break
 				}

@@ -129,7 +129,7 @@ func (r *Runtime) checkVersion(minimumRktBinVersion, recommendedRktBinVersion, m
 	}
 	if result != 0 {
 		// TODO(yifan): Record an event to expose the information.
-		glog.Warningf("rkt: current binary version %q is not recommended (recommended version %q)", r.versions.binVersion, recommendedRktBinVersion)
+		// glog.Warningf("rkt: current binary version %q is not recommended (recommended version %q)", r.versions.binVersion, recommendedRktBinVersion)
 	}
 
 	// Check rkt API version.

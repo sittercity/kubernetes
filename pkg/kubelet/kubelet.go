@@ -1405,7 +1405,7 @@ func (kl *Kubelet) GeneratePodHostNameAndDomain(pod *api.Pod) (string, string, e
 		glog.Errorf("hostname for pod:%q was longer than %d. Truncated hostname to :%q", pod.Name, hostnameMaxLen, hostname)
 	}
 
-	hostDomain := ""
+	hostDomain := fmt.Sprintf("pod.%s.%s", pod.Namespace, clusterDomain)
 	if len(pod.Spec.Subdomain) > 0 {
 		if msgs := utilvalidation.IsDNS1123Label(pod.Spec.Subdomain); len(msgs) != 0 {
 			return "", "", fmt.Errorf("Pod Subdomain %q is not a valid DNS label: %s", pod.Spec.Subdomain, strings.Join(msgs, ";"))
@@ -1703,9 +1703,10 @@ func (kl *Kubelet) GetClusterDNS(pod *api.Pod) ([]string, []string, error) {
 
 	var dnsSearch []string
 	if kl.clusterDomain != "" {
-		nsSvcDomain := fmt.Sprintf("%s.svc.%s", pod.Namespace, kl.clusterDomain)
+		nsSvcDomain := fmt.Sprintf("svc.%s.%s", pod.Namespace, kl.clusterDomain)
+		nsPodDomain := fmt.Sprintf("pod.%s.%s", pod.Namespace, kl.clusterDomain)
 		svcDomain := fmt.Sprintf("svc.%s", kl.clusterDomain)
-		dnsSearch = append([]string{nsSvcDomain, svcDomain, kl.clusterDomain}, hostSearch...)
+		dnsSearch = append([]string{nsSvcDomain, nsPodDomain, svcDomain, kl.clusterDomain}, hostSearch...)
 	} else {
 		dnsSearch = hostSearch
 	}

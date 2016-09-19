@@ -1015,11 +1015,17 @@ func (r *Runtime) generateRunCommand(pod *api.Pod, uuid, netnsName string) (stri
 			runPrepared = append(runPrepared, fmt.Sprintf("--dns-opt=%s", defaultDNSOption))
 		}
 
-		// TODO(yifan): host domain is not being used.
-		hostname, _, err = r.runtimeHelper.GeneratePodHostNameAndDomain(pod)
+		var hostDomain string
+		hostname, hostDomain, err = r.runtimeHelper.GeneratePodHostNameAndDomain(pod)
 		if err != nil {
 			return "", err
 		}
+		runPrepared = append(runPrepared, fmt.Sprintf("--dns-search=%s", hostDomain))
+
+		// setup /etc/hosts
+		runPrepared = append(runPrepared, fmt.Sprintf("--hosts-entry 127.0.1.1=%s.%s", hostname, hostDomain))
+		runPrepared = append(runPrepared, fmt.Sprintf("--hosts-entry 127.0.1.1=%s", hostname))
+
 	}
 
 	runPrepared = append(runPrepared, fmt.Sprintf("--hostname=%s", hostname))
